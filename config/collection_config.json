@@ -1,0 +1,24 @@
+{
+    "reddit": {
+        "auth_url": "https://www.reddit.com/api/v1/access_token", 
+        "base_url": "https://oauth.reddit.com",
+
+        "collection_configs": [
+            {
+                "subreddit": "Conservatives", 
+                "karma_threshold": 100, 
+                "number_of_users": 8,
+                "number_of_posts_per_users": 10, 
+                "label": "c"
+
+            },
+            {
+                "subreddit": "Liberal", 
+                "karma_threshold": 100, 
+                "number_of_users": 8,
+                "number_of_posts_per_users": 10,
+                "label": "d"
+            }
+        ]
+    }
+}

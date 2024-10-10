@@ -1,0 +1,9 @@
+{
+    "input_file": "./data.csv",
+    "output_file": "./scores.csv",
+    "dict_type": "emfd",
+    "docs_col": "text",
+    "model_path": "word2vec-google-news-300.bin",
+    "tfidf": "False",
+    "format": "virtue_vice"
+}
