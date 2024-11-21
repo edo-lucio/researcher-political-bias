@@ -1,0 +1,2 @@
+[console_scripts]
+collect = data_collection.collect_data:main

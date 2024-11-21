@@ -5,18 +5,25 @@
 
         "collection_configs": [
             {
-                "subreddit": "Conservatives", 
-                "karma_threshold": 100, 
-                "number_of_users": 8,
-                "number_of_posts_per_users": 10, 
+                "subreddit": "conservative", 
+                "number_of_posts_per_users": 1000, 
                 "label": "c"
 
             },
             {
-                "subreddit": "Liberal", 
-                "karma_threshold": 100, 
-                "number_of_users": 8,
-                "number_of_posts_per_users": 10,
+                "subreddit": "progressive", 
+                "number_of_posts_per_users": 1000,
+                "label": "d"
+            },
+            {
+                "subreddit": "republican", 
+                "number_of_posts_per_users": 1000, 
+                "label": "c"
+
+            },
+            {
+                "subreddit": "wayofthebern", 
+                "number_of_posts_per_users": 1000,
                 "label": "d"
             }
         ]

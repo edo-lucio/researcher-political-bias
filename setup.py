@@ -5,13 +5,15 @@ def load_requirements():
         return f.read().splitlines()
 
 setup(
-    name='political_bias_prediction',
+    name='rps',
     version='0.1',
-    packages=find_packages(),
+    packages=find_packages(where="src"),  # Specify src as the root for packages
+    package_dir={"": "src"},  # Map package root to src directory
     include_package_data=True,
     install_requires=load_requirements(),
     entry_points={
         'console_scripts': [
+            'collect=data_collection.collect_data:main',  # Update to match the package path
         ],
     },
 )

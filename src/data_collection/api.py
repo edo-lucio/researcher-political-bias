@@ -66,49 +66,77 @@ class RedditApi(ApiInterface):
                 self._update_token()
             return super().get_request(url)
         except Exception as e:
-            logging.error(f"First attempt failed with error: {str(e)}")
-
             if "expired" in str(e).lower():
                 logging.info("Refreshing access token and retrying...")
                 self._update_token()
                 try:
                     return super().get_request(url)
                 except Exception as retry_error:
-                    logging.error(f"Retry failed with error: {str(retry_error)}")
                     raise retry_error
             else:
                 raise e
 
-    def get_top_users_by_karma(self, subreddit: str, limit: int = 1000):
-        user_karma = collections.defaultdict(int)
-        
-        after = None
-        total_fetched = 0
+    def get_top_users_by_karma(self, subreddit: str, limit: int = 100000):
+            user_karma = collections.defaultdict(int)
+            after = None
 
-        while total_fetched < limit:
-            url = f"https://oauth.reddit.com/r/{subreddit}/top?limit=100&t=all"
-            if after:
-                url += f"&after={after}"
-            logging.info(f"Fetching posts from: {url}")
-        
-            response = self.get_request(url)
-            posts = response.get('data', {}).get('children', [])
+            while len(user_karma.keys()) < limit:
+                # Reddit's 'top' posts endpoint
+                url = f"https://oauth.reddit.com/r/{subreddit}/top?limit=100&t=all"
+                if after:
+                    url += f"&after={after}"
 
-            for post in posts:
-                post_data = post['data']
-                author = post_data['author']
-                karma = post_data['score']
-                if author and karma:
+                try:
+                    response = self.get_request(url)
+                except Exception as e:
+                    if "404" in str(e) or "403" in str(e):
+                        logging.error(f"Access error: {e}")
+                    if "429" in str(e):
+                        logging.error(f"Rate limit error: {e}")
+                        raise Exception("Rate limit exceeded, try again later.")
+                    logging.error(f"Error fetching data: {e}")
+                    continue
+
+                posts = response.get('data', {}).get('children', [])
+                for post in posts:
+                    post_data = post['data']
+                    author = post_data['author']
+                    karma = post_data['score']  # Karma from post score
+
+                    # Add the post karma to the user’s total karma
                     user_karma[author] += karma
 
-            total_fetched += len(posts)
-            after = response.get('data', {}).get('after')
+                logging.info(f"Total users fetched so far: {len(user_karma.keys())}")
+                after = response.get('data', {}).get('after')
 
-            if not after:
-                break 
+                # Stop if there are no more posts to fetch
+                if not after:
+                    break
 
-        sorted_users = sorted(user_karma.items(), key=lambda item: item[1], reverse=True)
-        return sorted_users[:limit] 
+            # Sort users by karma in descending order
+            sorted_users = sorted(user_karma.items(), key=lambda item: item[1], reverse=True)
+            return sorted_users
+
+    def get_subreddit_member_count(self, subreddit: str) -> int:
+        """
+        Retrieves the number of members in a subreddit.
+
+        Parameters:
+            subreddit (str): The name of the subreddit (without 'r/').
+
+        Returns:
+            int: The number of members in the subreddit.
+        """
+        url = f"https://oauth.reddit.com/r/{subreddit}/about"
+        
+        try:
+            response = self.get_request(url)
+            members_count = response.get('data', {}).get('subscribers', 0)
+            logging.info(f"Subreddit '{subreddit}' has {members_count} members.")
+            return members_count
+        except Exception as e:
+            logging.error(f"Failed to retrieve member count for subreddit '{subreddit}': {e}")
+            return 0
 
     def get_user_posts_within_timeframe(
             self, 
@@ -134,16 +162,19 @@ class RedditApi(ApiInterface):
             url = url.format({"username": username})
             if after:
                 url += f"&after={after}"
-            logging.info(f"Fetching posts from: {url}")
+            logging.info(f"Fetching {username}'s posts")
             
             try:
                 response = self.get_request(url)
             except Exception as e:
                 if "404" in str(e):
                     logging.error(f"User {username} does not exists")
+                    return []
                 if "403" in str(e):
                     logging.error(f"User {username} cannot be accessed")
-                return []
+                    return []
+                if "429" in str(e):
+                    raise Exception(e)
 
             posts = response.get('data', {}).get('children', [])
 
@@ -165,4 +196,3 @@ class RedditApi(ApiInterface):
                 break
 
         return user_posts
-    

@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Name: rps
+Version: 0.1
+Requires-Dist: gensim==4.3.3
+Requires-Dist: nltk==3.9.1
+Requires-Dist: numpy<2.0,>=1.18.5
+Requires-Dist: pandas==2.2.3
+Requires-Dist: python-dotenv==1.0.1
+Requires-Dist: Requests==2.32.3
+Requires-Dist: scikit_learn==1.5.2
+Requires-Dist: setuptools==75.1.0

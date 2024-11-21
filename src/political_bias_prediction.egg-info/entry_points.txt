@@ -1,0 +1,2 @@
+[console_scripts]
+collect = political_bias_prediction.main:main

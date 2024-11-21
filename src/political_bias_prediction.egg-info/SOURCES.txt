@@ -1,0 +1,14 @@
+setup.py
+src/Moral_Foundation_FrameAxis/__init__.py
+src/Moral_Foundation_FrameAxis/frameAxis.py
+src/Moral_Foundation_FrameAxis/scorer.py
+src/Moral_Foundation_FrameAxis/training_w2v.py
+src/data_collection/__init__.py
+src/data_collection/api.py
+src/data_collection/collect_data.py
+src/political_bias_prediction.egg-info/PKG-INFO
+src/political_bias_prediction.egg-info/SOURCES.txt
+src/political_bias_prediction.egg-info/dependency_links.txt
+src/political_bias_prediction.egg-info/entry_points.txt
+src/political_bias_prediction.egg-info/requires.txt
+src/political_bias_prediction.egg-info/top_level.txt

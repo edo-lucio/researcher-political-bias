@@ -4,7 +4,7 @@ import pandas as pd
 from gensim.models import KeyedVectors
 
 from frameAxis import FrameAxis
-from utils.utils import Utils
+from utils import read_json
 
 class MoralFoundationScorer:
     def __init__(
@@ -44,7 +44,7 @@ class MoralFoundationScorer:
             raise ValueError(
                 f'Invalid dictionary type received: {self.dict_type}, dict_type must be one of \"emfd\", \"mfd\", \"mfd2\", \"customized\"')
 
-        data = pd.read_csv(self.input_file, on_bad_lines='skip', encoding='utf-8')
+        data = pd.read_csv(self.input_file, on_bad_lines='skip', encoding='utf-8').drop_duplicates()
         print(data.head())
 
         fa = FrameAxis(mfd=self.dict_type, w2v_model=self.model)
@@ -58,7 +58,7 @@ class MoralFoundationScorer:
         return mf_scores
 
 if __name__ == "__main__":
-    config = Utils.read_json("./config/scoring_config.json")
+    config = read_json("./config/scoring_config.json")
 
     scorer = MoralFoundationScorer(
         input_file=config["input_file"],
